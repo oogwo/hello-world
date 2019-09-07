@@ -1,0 +1,84 @@
+/****************************************************************************
+Name: Ogwo Ogwo
+Course: COSC 6352
+Title: Advanced Operating Systems
+Instructor: Dr. Mohammed Belkhouche
+HomeWork No: HomeWork 1
+Description: Program forks five processes from the same parent to compute
+			 prime number of 5 different number ranges and write them to
+			 a file. The parent process terminates only after the children
+			 processes have completed their execution.
+Due Date: September 11, 2019.
+Semester: Fall 2019
+How to Run Program: Included is a makefile. Typing 'make' in the command line
+					will compile the program. Using the command './hw1' will 
+					run the program.
+****************************************************************************/
+
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <fstream>
+#include <string>
+using namespace std;
+
+void primefinder(int begin,int stop, string doc)
+{
+	ofstream dataFile;
+	int count;
+	
+	dataFile.open(doc,ios::out);
+	
+	while(FileObject.fail())
+		dataFile.open(doc,ios::out);
+	
+	for(int i=begin; i<=stop; i++)
+	{
+		count = 0;
+		for(int j=2; j<i; j++)
+			if(i%j==0)
+				count++;
+		if(counter==0)
+			dataFile << i << "\n";
+	}
+
+	dataFile.close();
+}
+
+int main()
+{	
+	for(int i=1; i <= 5; i++)
+	{
+		if(i == 1)
+		{
+			fork();
+			primefinder(2,2000,"primes_2_2000.txt");
+		}
+		else if(i == 2)
+		{
+			fork();	
+			primefinder(2001,4000,"primes_2001_4000.txt");
+		}
+		else if( i == 3)
+		{
+			fork();
+			primefinder(4001,6000,"primes_4001_6000.txt");
+		}
+		else if(i == 4)
+		{	fork();	
+			primefinder(6001,8000,"primes_6001_8000.txt");
+		}
+		else
+		{
+			fork();
+			primefinder(8001,10000,"primes_8001_10000.txt");
+		}
+	}
+	
+	if(fork() > 0)
+		wait(NULL);	
+	
+	return 0;
+}
+
