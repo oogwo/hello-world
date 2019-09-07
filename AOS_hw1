@@ -1,1 +1,81 @@
+/****************************************************************************
+Name: Ogwo Ogwo
+Course: COSC 6352
+Title: Advanced Operating Systems
+Instructor: Dr. Mohammed Belkhouche
+HomeWork No: HomeWork 1
+Description: Program forks five processes from the same parent to compute
+			 prime number of 5 different number ranges and write them to
+			 a file. The parent process terminates only after the children
+			 processes have completed their execution.
+Due Date: September 11, 2019.
+Semester: Fall 2019
+How to Run Program: Included is a makefile. Typing 'make' in the command line
+					will compile the program. Using the command './hw1' will 
+					run the program.
+****************************************************************************/
 
+#include <stdio.h>			// Input - Output Stream header.
+#include <unistd.h>			// header file
+#include <sys/types.h>		// System header file for the fork()
+#include <sys/wait.h>		// System header file for Wait()
+#include <fstream>			// File stream header.
+#include <string>			// String class header.
+using namespace std;
+
+void primefinder(int, int, string);	// header for prime number function.
+
+int main()							// Main Program (Parent Process)
+{	
+	for(int i=0; i < 5; i++)		//Creates 5 Children Processes.
+	{
+		switch(i)
+		{
+			case 0: fork();	// Process 1
+					primefinder(2,2000,"primes_2_2000.txt");			// for the range 2-2000
+				break;
+			case 1: fork();	// Process 2
+					primefinder(2001,4000,"primes_2001_4000.txt");		// for the range 2001-4000
+				break;
+			case 2: fork();	// Process 3
+					primefinder(4001,6000,"primes_4001_6000.txt");		// for the range 4001-6000
+				break;
+			case 3: fork();	// Process 4
+					primefinder(6001,8000,"primes_6001_8000.txt");		// for the range 6001-8000
+				break;
+			case 4: fork();	// Process 5
+					primefinder(8001,10000,"primes_8001_10000.txt");	// for the range 8001-10000
+				break;
+		}
+	}
+	
+	if(fork() > 0)
+		wait(NULL);			// Parent waits for children to terminate.
+	
+	return 0;				// Exits program.
+}
+
+void primefinder(int start,int end, string filename)
+{
+	fstream FileObject;						// Creates a file stream object.
+	
+	FileObject.open(filename,ios::out);		// Opens the file for writing.
+	
+	while(FileObject.fail())	// Loops till it successfully opens file.
+		FileObject.open(filename,ios::out);
+	
+	for(int i=start; i<=end; i++)
+	{
+		int counter = 0;
+		for(int j=2; j<i; j++) 			// for the denominator
+			if(i%j==0)
+			{
+				counter++;
+				break;
+			}
+		if(counter==0)
+			FileObject << i << endl;	// Writes to the file.
+	}
+
+	FileObject.close();					// Closes the file.
+}
